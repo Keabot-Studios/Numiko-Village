@@ -1,8 +1,16 @@
 package net.keabotstudios.projectpickman;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glGetString;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+
+import java.util.Random;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.ContextAttribs;
@@ -10,7 +18,8 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
 
-import net.keabotstudios.projectpickman.util.ShaderUtils;
+import net.keabotstudios.projectpickman.graphics.Shader;
+import net.keabotstudios.projectpickman.math.Vector3f;
 
 public class Game implements Runnable {
 	
@@ -47,10 +56,11 @@ public class Game implements Runnable {
 		int vao = glGenVertexArrays();
 		glBindVertexArray(vao);
 		
-		int shader = ShaderUtils.load("res/shaders/shader.vert", "res/shaders/shader.frag");
-		glUseProgram(shader);
-		
+		Shader shader = new Shader("res/shaders/shader.vert", "res/shaders/shader.frag");
+		shader.enable();
+		Random r = new Random();
 		while(running) {
+			shader.setUniform3f("col", new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat()));
 			render();
 			Display.update();
 			if(Display.isCloseRequested()) running = false;
