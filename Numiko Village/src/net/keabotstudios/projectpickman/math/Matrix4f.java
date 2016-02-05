@@ -2,12 +2,17 @@ package net.keabotstudios.projectpickman.math;
 
 import static java.lang.Math.*;
 
+import java.nio.FloatBuffer;
+
+import net.keabotstudios.projectpickman.util.BufferUtils;
+
 public class Matrix4f {
 	
 	public float[] matrix = new float[4 * 4];
 	
 	/**
 	 * @return An identity matrix.
+	 * @author Richard Abbott
 	 */
 	public static Matrix4f identity() {
 		Matrix4f result = new Matrix4f();
@@ -26,6 +31,8 @@ public class Matrix4f {
 	
 	/**
 	 * @return The product of this matrix and matrix.
+	 * @param matrix The matrix to multiply with.
+	 * @author Richard Abbott
 	 */
 	public Matrix4f multiply(Matrix4f matrix) {
 		Matrix4f result = new Matrix4f();
@@ -46,6 +53,7 @@ public class Matrix4f {
 	/**
 	 * @param vector The position to translate to. (x, y, z)
 	 * @return A translation matrix.
+	 * @author Richard Abbott
 	 */
 	public Matrix4f translate(Vector3f vector) {
 		Matrix4f result = identity();
@@ -60,6 +68,7 @@ public class Matrix4f {
 	/**
 	 * @param angle The angle to rotate to. (a)
 	 * @return A rotation matrix.
+	 * @author Richard Abbott
 	 */
 	public Matrix4f rotate(float angle) {
 		Matrix4f result = identity();
@@ -76,10 +85,17 @@ public class Matrix4f {
 	}
 	
 	/**
-	 * @param vector The angle to rotate to. (a)
-	 * @return A projection matrix.
+	 * Creates an orthographic matrix.
+	 * @param left Left bound.
+	 * @param right Right bound.
+	 * @param bottom Bottom bound.
+	 * @param top Top bound.
+	 * @param near Near bound.
+	 * @param fat Far bound.
+	 * @return An orthographic matrix.
+	 * @author Richard Abbott
 	 */
-	public Matrix4f projection(float left, float right, float bottom, float top, float near, float far) {
+	public Matrix4f orthographic(float left, float right, float bottom, float top, float near, float far) {
 		Matrix4f result = identity();
 		
 		result.matrix[0 + 0 * 4] = 2.0f / (right - left);
@@ -93,6 +109,10 @@ public class Matrix4f {
 		result.matrix[2 + 3 * 4] = (near + far) / (near - far);
 		
 		return result;
+	}
+	
+	public FloatBuffer toFloatBuffer() {
+		return BufferUtils.createFloatBuffer(matrix);
 	}
 
 }
