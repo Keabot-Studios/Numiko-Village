@@ -11,6 +11,9 @@ import net.keabotstudios.projectpickman.util.ShaderUtils;
 
 public class Shader {
 	
+	public static final int VERTEX_ATTRIB = 0;
+	public static final int TCOORD_ATTRIB = 1;
+	
 	private final int ID;
 	private Map<String, Integer> locationCache = new HashMap<String, Integer>();
 	
