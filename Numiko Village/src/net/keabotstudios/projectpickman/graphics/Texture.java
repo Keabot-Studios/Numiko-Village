@@ -43,7 +43,7 @@ public class Texture {
 			int g = (pixels[i] & 0xff00) >> 8;
 			int b = (pixels[i] & 0xff) >> 0;
 			
-			data[i] = a << 24 | b << 16 | g << 8 | r;
+			data[i] = a << 24 | r << 16 | g << 8 | b;
 		}
 		int result = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, result);
