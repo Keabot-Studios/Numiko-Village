@@ -3,7 +3,6 @@ package net.keabotstudios.projectpickman.graphics;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -20,16 +19,22 @@ public class Texture {
 	}
 
 	private int load(String path) {
-		int[] pixels = null;
 		try {
-			BufferedImage image = ImageIO.read(new FileInputStream(path));
-			width = image.getWidth();
-			height = image.getHeight();
-			pixels = new int[width * height];
-			image.getRGB(0, 0, width, height, pixels, 0, width);
+			BufferedImage image = ImageIO.read(getClass().getResourceAsStream(path));
+			return load(image);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+		return 0;
+	}
+	
+	private int load(BufferedImage image) {
+		int[] pixels = null;
+		
+		width = image.getWidth();
+		height = image.getHeight();
+		pixels = new int[width * height];
+		image.getRGB(0, 0, width, height, pixels, 0, width);
 		
 		int[] data = new int[width * height];
 		for(int i = 0; i < width * height; i++) {

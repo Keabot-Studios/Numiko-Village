@@ -95,7 +95,7 @@ public class Matrix4f {
 	 * @return An orthographic matrix.
 	 * @author Richard Abbott
 	 */
-	public Matrix4f orthographic(float left, float right, float bottom, float top, float near, float far) {
+	public static Matrix4f orthographic(float left, float right, float bottom, float top, float near, float far) {
 		Matrix4f result = identity();
 		
 		result.matrix[0 + 0 * 4] = 2.0f / (right - left);

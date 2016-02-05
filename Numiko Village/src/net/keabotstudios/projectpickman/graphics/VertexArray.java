@@ -49,6 +49,7 @@ public class VertexArray {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 	
+	@Deprecated
 	public void draw() {
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_BYTE, 0);
 	}
