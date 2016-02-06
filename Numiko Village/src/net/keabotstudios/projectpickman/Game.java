@@ -14,49 +14,48 @@ import net.keabotstudios.projectpickman.graphics.Shader;
 import net.keabotstudios.projectpickman.input.Input;
 
 public class Game implements Runnable {
-	
+
 	private boolean running = false;
 	private Thread thread;
-	
+	private int fps, ups;
+
 	private long window;
-	
-	private Input input;
-	
 	private GameStateManager gsm;
-	
+	private Input input;
+
 	public void start() {
 		running = true;
 		thread = new Thread(this, References.NAME + " - Main");
 		thread.start();
 	}
-	
+
 	private void init() {
-		if(glfwInit() != GL_TRUE) {
+		if (glfwInit() != GL_TRUE) {
 			System.err.println("Could not initalize GLFW.");
 			System.exit(1);
 		}
-		
-		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+
+		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 		window = glfwCreateWindow(References.WIDTH, References.HEIGHT, References.NAME, NULL, NULL);
-		if(window == NULL) {
+		if (window == NULL) {
 			return;
 		}
-		
+
 		input = new Input(window);
-		
+
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		glfwSetWindowPos(window, (vidmode.width() - References.WIDTH) / 2, (vidmode.height() - References.HEIGHT) / 2);
 		glfwMakeContextCurrent(window);
 		glfwShowWindow(window);
-		
+
 		GL.createCapabilities();
-		
+
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		glActiveTexture(GL_TEXTURE0);
 		System.out.println("OpenGL: " + glGetString(GL_VERSION) + ", GPU Vendor: " + glGetString(GL_VENDOR));
 		Shader.loadAll();
-		
+
 		gsm = new GameStateManager(input);
 		gsm.push(new MainMenuState(gsm));
 	}
@@ -65,20 +64,46 @@ public class Game implements Runnable {
 	public void run() {
 		init();
 
-		while(running) {
-			update();
+		long lastTime = System.nanoTime();
+		double delta = 0.0;
+		double ns = 1000000000.0 / References.MAX_UPS;
+		long timer = System.currentTimeMillis();
+		int updates = 0;
+		int frames = 0;
+		while (running) {
+			long now = System.nanoTime();
+			delta += (now - lastTime) / ns;
+			lastTime = now;
+			if (delta >= 1.0) {
+				update();
+				updates++;
+				delta--;
+			}
+
 			render();
-			
-			if(glfwWindowShouldClose(window) == GL_TRUE) running = false;
+			frames++;
+
+			if (System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				ups = updates;
+				fps = frames;
+				updates = 0;
+				frames = 0;
+
+				System.out.println("UPS: " + ups + ", FPS: " + fps);
+			}
+
+			if (glfwWindowShouldClose(window) == GL_TRUE)
+				running = false;
 		}
 	}
-	
+
 	private void update() {
 		glfwPollEvents();
 		input.update();
 		gsm.update();
 	}
-	
+
 	private void render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		gsm.render();
@@ -88,5 +113,5 @@ public class Game implements Runnable {
 	public static void main(String args[]) {
 		new Game().start();
 	}
-	
+
 }

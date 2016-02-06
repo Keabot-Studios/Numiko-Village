@@ -3,7 +3,7 @@ package net.keabotstudios.projectpickman.map;
 import java.awt.image.BufferedImage;
 
 public class Tile {
-	
+
 	public enum TileType {
 		NORMAL, SOLID, PLATFORM
 	}
@@ -19,7 +19,7 @@ public class Tile {
 	public TileType getType() {
 		return type;
 	}
-	
+
 	public BufferedImage getTexture() {
 		return texture;
 	}

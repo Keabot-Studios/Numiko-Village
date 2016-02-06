@@ -7,6 +7,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="D:/Projects/Java/Numiko Village/LWJGL3/native"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="textures"/>
+	<classpathentry kind="lib" path="res"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

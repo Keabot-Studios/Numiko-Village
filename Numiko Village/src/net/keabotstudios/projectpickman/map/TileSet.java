@@ -1,8 +1,7 @@
-package net.keabotstudios.projectpickman.graphics;
+package net.keabotstudios.projectpickman.map;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,8 +9,8 @@ import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 
 import net.keabotstudios.projectpickman.References;
-import net.keabotstudios.projectpickman.map.Tile;
 import net.keabotstudios.projectpickman.map.Tile.TileType;
+import net.keabotstudios.projectpickman.util.ImageUtils;
 
 public class TileSet {
 
@@ -21,7 +20,7 @@ public class TileSet {
 	public TileSet(String tilesetImagePath, String tilesetCollisionsPath) {
 		String delims = "\\s+";
 		try {
-			InputStream in = getClass().getResourceAsStream(tilesetCollisionsPath + ".tsc");
+			InputStream in = getClass().getResourceAsStream(tilesetCollisionsPath);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
 			int width = Integer.parseInt(br.readLine());
@@ -37,7 +36,7 @@ public class TileSet {
 			}
 			br.close();
 
-			spritesheet = ImageIO.read(new FileInputStream(tilesetImagePath + ".png"));
+			spritesheet = ImageUtils.loadImage(tilesetImagePath);
 
 			tiles = new Tile[width * height];
 
@@ -50,8 +49,12 @@ public class TileSet {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Tile getTile(int id) {
+		if (id >= tiles.length) {
+			System.err.println("Tile id# " + id + "does not exist or is out of range!");
+			System.exit(1);
+		}
 		return tiles[id];
 	}
 }

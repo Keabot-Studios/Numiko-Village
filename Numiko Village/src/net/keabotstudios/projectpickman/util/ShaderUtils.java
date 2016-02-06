@@ -15,13 +15,13 @@ import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glValidateProgram;
 
 public class ShaderUtils {
-	
+
 	public static int load(String vertPath, String fragPath) {
 		String vert = FileUtils.loadAsString(vertPath);
 		String frag = FileUtils.loadAsString(fragPath);
 		return create(vert, frag);
 	}
-	
+
 	public static int create(String vert, String frag) {
 		int program = glCreateProgram();
 		int vertId = glCreateShader(GL_VERTEX_SHADER);
@@ -30,11 +30,11 @@ public class ShaderUtils {
 		glShaderSource(fragId, frag);
 		glCompileShader(vertId);
 		glCompileShader(fragId);
-		if(glGetShaderi(vertId, GL_COMPILE_STATUS) == GL_FALSE) {
+		if (glGetShaderi(vertId, GL_COMPILE_STATUS) == GL_FALSE) {
 			System.err.println("Failed to compile vertex shader!");
 			System.err.println(glGetShaderInfoLog(vertId, 2048));
 		}
-		if(glGetShaderi(fragId, GL_COMPILE_STATUS) == GL_FALSE) {
+		if (glGetShaderi(fragId, GL_COMPILE_STATUS) == GL_FALSE) {
 			System.err.println("Failed to compile fragment shader!");
 			System.err.println(glGetShaderInfoLog(fragId, 2048));
 		}

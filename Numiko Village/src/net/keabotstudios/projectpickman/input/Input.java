@@ -65,7 +65,7 @@ public class Input {
 		else {
 			return keys[GLFW.GLFW_KEY_LEFT];
 		}
-		
+
 	}
 
 	public boolean right() {
@@ -74,7 +74,7 @@ public class Input {
 		else {
 			return keys[GLFW.GLFW_KEY_RIGHT];
 		}
-		
+
 	}
 
 	public boolean action1() {
@@ -83,7 +83,7 @@ public class Input {
 		else {
 			return keys[GLFW.GLFW_KEY_Z];
 		}
-		
+
 	}
 
 	public boolean action2() {
@@ -92,7 +92,7 @@ public class Input {
 		else {
 			return keys[GLFW.GLFW_KEY_X];
 		}
-		
+
 	}
 
 	public int mouseX() {
