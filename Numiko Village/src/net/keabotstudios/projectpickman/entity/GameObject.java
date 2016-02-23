@@ -1,10 +1,11 @@
 package net.keabotstudios.projectpickman.entity;
 
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 import net.keabotstudios.projectpickman.References;
 import net.keabotstudios.projectpickman.graphics.Animation;
-import net.keabotstudios.projectpickman.map.Tile;
+import net.keabotstudios.projectpickman.io.Input;
 import net.keabotstudios.projectpickman.map.Tile.TileType;
 import net.keabotstudios.projectpickman.map.TileMap;
 
@@ -30,16 +31,22 @@ public abstract class GameObject {
 	protected int cheight;
 
 	// collision
+
 	protected int currRow;
 	protected int currCol;
 	protected double xdest;
 	protected double ydest;
 	protected double xtemp;
 	protected double ytemp;
-	protected boolean topLeft;
-	protected boolean topRight;
-	protected boolean bottomLeft;
-	protected boolean bottomRight;
+	protected int leftTile;
+	protected int rightTile;
+	protected int topTile;
+	protected int bottomTile;
+	protected boolean topCollision;
+	protected boolean leftCollision;
+	protected boolean rightCollision;
+	protected boolean bottomCollision;
+	protected boolean bottomLedge;
 
 	// animation
 	protected Animation animation;
@@ -54,6 +61,8 @@ public abstract class GameObject {
 	protected boolean down;
 	protected boolean jumping;
 	protected boolean falling;
+	protected boolean ledgeFall;
+	protected boolean ignoreCollision;
 
 	// movement attributes
 	protected double moveSpeed;
@@ -95,27 +104,33 @@ public abstract class GameObject {
 		return new Rectangle((int) x - cwidth / 2, (int) y - cheight / 2, cwidth, cheight);
 	}
 
-	public void calculateCorners(double x, double y) {
-		int leftTile = (int) (x - cwidth / 2) / References.TILE_SIZE;
-		int rightTile = (int) (x + cwidth / 2 - 1) / References.TILE_SIZE;
-		int topTile = (int) (y - cheight / 2) / References.TILE_SIZE;
-		int bottomTile = (int) (y + cheight / 2 - 1) / References.TILE_SIZE;
+	public void calculateCollision(double x, double y) {
+		topCollision = leftCollision = rightCollision = bottomCollision = bottomLedge = false;
+		int xl = (int) (x - cwidth / 2);
+		int xr = (int) (x + cwidth / 2 - 1);
+		int yt = (int) (y - cheight / 2);
+		int yb = (int) (y + cheight / 2 - 1);
+		leftTile = xl / References.TILE_SIZE;
+		rightTile = xr / References.TILE_SIZE;
+		topTile = yt / References.TILE_SIZE;
+		bottomTile = yb / References.TILE_SIZE;
 		if (topTile < 0 || bottomTile >= tileMap.getNumRows() || leftTile < 0 || rightTile >= tileMap.getNumCols()) {
-			topLeft = topRight = bottomLeft = bottomRight = false;
 			return;
 		}
-		TileType tl = tileMap.getType(topTile, leftTile);
-		TileType tr = tileMap.getType(topTile, rightTile);
-		TileType bl = tileMap.getType(bottomTile, leftTile);
-		TileType br = tileMap.getType(bottomTile, rightTile);
-		topLeft = tl == TileType.SOLID;
-		topRight = tr == TileType.SOLID;
-		bottomLeft = bl == TileType.SOLID || bl == TileType.PLATFORM;
-		bottomRight = br == TileType.SOLID || br == TileType.PLATFORM;
+		for (int i = 0; i < rightTile - leftTile + 1; i++) {
+			topCollision |= tileMap.getType(topTile, leftTile + i) == TileType.SOLID;
+			bottomCollision |= tileMap.getType(bottomTile, leftTile + i) == TileType.SOLID;
+			bottomLedge |= tileMap.getType(bottomTile, leftTile + i) == TileType.PLATFORM;
+		}
+		for (int i = 0; i < bottomTile - topTile + 1; i++) {
+			leftCollision |= tileMap.getType(topTile + i, leftTile) == TileType.SOLID;
+			rightCollision |= tileMap.getType(topTile + i, rightTile) == TileType.SOLID;
+		}
 	}
 
-	public void checkTileMapCollision() {
-
+	public boolean checkTileMapCollision() {
+		if (ignoreCollision)
+			return false;
 		currCol = (int) x / References.TILE_SIZE;
 		currRow = (int) y / References.TILE_SIZE;
 
@@ -125,50 +140,66 @@ public abstract class GameObject {
 		xtemp = x;
 		ytemp = y;
 
-		calculateCorners(x, ydest);
+		boolean collision = false;
+
+		calculateCollision(x, ydest);
 		if (dy < 0) {
-			if (topLeft || topRight) {
+			if (topCollision) {
 				dy = 0;
-				ytemp = currRow * References.TILE_SIZE + cheight / 2;
+				ytemp = (topTile + 1) * References.TILE_SIZE + cheight / 2;
+				collision = true;
 			} else {
 				ytemp += dy;
 			}
 		}
 		if (dy > 0) {
-			if (bottomLeft || bottomRight) {
+			if (bottomCollision) {
 				dy = 0;
 				falling = false;
-				ytemp = (currRow + 1) * References.TILE_SIZE - cheight / 2;
+				ytemp = bottomTile * References.TILE_SIZE - cheight / 2;
+				collision = true;
+				ledgeFall = false;
+			} else if (!ledgeFall && bottomLedge && (y + cheight / 2 - 1) - bottomTile * References.TILE_SIZE < dy) {
+				dy = 0;
+				falling = false;
+				ytemp = bottomTile * References.TILE_SIZE - cheight / 2;
+				collision = true;
 			} else {
 				ytemp += dy;
 			}
+			if (ledgeFall) {
+				ledgeFall = tileMap.getType((int) (y - cheight / 2 + 1) / References.TILE_SIZE, (int) x / References.TILE_SIZE) != TileType.PLATFORM;
+			}
 		}
 
-		calculateCorners(xdest, y);
+		calculateCollision(xdest, y);
 		if (dx < 0) {
-			if (topLeft || bottomLeft) {
+			if (leftCollision) {
 				dx = 0;
-				xtemp = currCol * References.TILE_SIZE + cwidth / 2;
+				xtemp = (leftTile + 1) * References.TILE_SIZE + cwidth / 2;
+				collision = true;
 			} else {
 				xtemp += dx;
 			}
 		}
 		if (dx > 0) {
-			if (topRight || bottomRight) {
+			if (rightCollision) {
 				dx = 0;
-				xtemp = (currCol + 1) * References.TILE_SIZE - cwidth / 2;
+				xtemp = rightTile * References.TILE_SIZE - cwidth / 2;
+				collision = true;
 			} else {
 				xtemp += dx;
 			}
 		}
 
 		if (!falling) {
-			calculateCorners(x, ydest + 1);
-			if (!bottomLeft && !bottomRight) {
+			calculateCollision(x, ydest + 1);
+			if (!bottomCollision && !bottomLedge) {
 				falling = true;
 			}
 		}
 
+		return collision;
 	}
 
 	public int getx() {
@@ -210,8 +241,8 @@ public abstract class GameObject {
 	}
 
 	public void setMapPosition() {
-		xmap = tileMap.getx();
-		ymap = tileMap.gety();
+		xmap = tileMap.getX();
+		ymap = tileMap.getY();
 	}
 
 	public void setLeft(boolean b) {
@@ -233,7 +264,13 @@ public abstract class GameObject {
 	public void setJumping(boolean b) {
 		jumping = b;
 	}
+	
+	public boolean notOnScreen() {
+		return x + xmap + width < 0 || x + xmap + width > References.WIDTH || y + ymap + height < 0 || y + ymap + height > References.HEIGHT;
+	}
 
-	public abstract void render();
+	public abstract void handleInput(Input input);
+	public abstract void update();
+	public abstract void render(Graphics2D g);
 
 }

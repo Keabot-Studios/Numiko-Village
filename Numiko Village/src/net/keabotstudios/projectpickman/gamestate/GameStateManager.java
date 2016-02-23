@@ -1,8 +1,9 @@
 package net.keabotstudios.projectpickman.gamestate;
 
+import java.awt.Graphics2D;
 import java.util.LinkedList;
 
-import net.keabotstudios.projectpickman.input.Input;
+import net.keabotstudios.projectpickman.io.Input;
 
 public class GameStateManager {
 
@@ -22,8 +23,8 @@ public class GameStateManager {
 		states.peek().update();
 	}
 
-	public void render() {
-		states.peek().render();
+	public void render(Graphics2D g) {
+		states.peek().render(g);
 	}
 
 	public void pop() {

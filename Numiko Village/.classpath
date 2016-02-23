@@ -2,11 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="D:/Projects/Java/Numiko Village/LWJGL3/jar/lwjgl.jar" sourcepath="D:/Projects/Java/Numiko Village/LWJGL3/src.zip">
+	<classpathentry exported="true" kind="lib" path="res"/>
+	<classpathentry kind="lib" path="libs/jars/jinput.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="D:/Projects/Java/Numiko Village/LWJGL3/native"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Numiko Village/libs/natives/jinput"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="res"/>
+	<classpathentry kind="lib" path="libs/jars/jl1.0.1.jar"/>
+	<classpathentry kind="lib" path="libs/jars/mp3spi1.9.5.jar"/>
+	<classpathentry kind="lib" path="libs/jars/tritonus_share.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

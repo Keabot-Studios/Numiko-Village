@@ -1,6 +1,8 @@
 package net.keabotstudios.projectpickman.gamestate;
 
-import net.keabotstudios.projectpickman.input.Input;
+import java.awt.Graphics2D;
+
+import net.keabotstudios.projectpickman.io.Input;
 
 public abstract class GameState {
 
@@ -14,7 +16,7 @@ public abstract class GameState {
 
 	public abstract void update();
 
-	public abstract void render();
+	public abstract void render(Graphics2D g);
 
 	public abstract void handleInput(Input input);
 

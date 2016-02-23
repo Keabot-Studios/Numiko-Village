@@ -1,0 +1,14 @@
+-gui-
+numiko_title
+bar
+bar_border,1,8
+buttonPrompts,8,8
+-sprite-
+numiko_base
+test
+testy
+-tileset-
+-background-
+grassBg
+menubg1
+test_bg

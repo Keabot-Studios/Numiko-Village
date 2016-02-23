@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import javax.imageio.ImageIO;
-
 import net.keabotstudios.projectpickman.References;
 import net.keabotstudios.projectpickman.map.Tile.TileType;
 import net.keabotstudios.projectpickman.util.ImageUtils;
@@ -36,7 +34,7 @@ public class TileSet {
 			}
 			br.close();
 
-			spritesheet = ImageUtils.loadImage(tilesetImagePath);
+			spritesheet = ImageUtils.loadImageRaw(tilesetImagePath);
 
 			tiles = new Tile[width * height];
 
@@ -51,10 +49,14 @@ public class TileSet {
 	}
 
 	public Tile getTile(int id) {
-		if (id >= tiles.length) {
-			System.err.println("Tile id# " + id + "does not exist or is out of range!");
+		if (id >= tiles.length || id < 0) {
+			System.err.println("Tile id " + id + " does not exist or is out of range!");
 			System.exit(1);
 		}
 		return tiles[id];
+	}
+
+	public int getAmountOfTiles() {
+		return tiles.length;
 	}
 }

@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 public class Animation {
 
-	private Texture[] frames;
+	private BufferedImage[] frames;
 	private int currentFrame;
 	private int numFrames;
 
@@ -19,20 +19,8 @@ public class Animation {
 		timesPlayed = 0;
 	}
 
-	public void setFrames(Texture[] frames) {
-		this.frames = frames;
-		currentFrame = 0;
-		count = 0;
-		timesPlayed = 0;
-		numFrames = frames.length;
-	}
-
 	public void setFrames(BufferedImage[] frames) {
-		this.frames = new Texture[frames.length];
-		for (int i = 0; i < frames.length; i++) {
-			this.frames[i] = new Texture(frames[i]);
-		}
-
+		this.frames = frames;
 		currentFrame = 0;
 		count = 0;
 		timesPlayed = 0;
@@ -41,10 +29,6 @@ public class Animation {
 
 	public void setDelay(int i) {
 		delay = i;
-	}
-
-	public void setFrame(int i) {
-		currentFrame = i;
 	}
 
 	public void setNumFrames(int i) {
@@ -75,10 +59,6 @@ public class Animation {
 		}
 	}
 
-	public int getFrame() {
-		return currentFrame;
-	}
-
 	public int getCount() {
 		return count;
 	}
@@ -87,27 +67,16 @@ public class Animation {
 		return numFrames;
 	}
 
-	public void bind() {
-		frames[currentFrame].bind();
-		;
-	}
-
-	public void unbind() {
-		frames[currentFrame].unbind();
-		;
-	}
-
 	public boolean hasPlayedOnce() {
 		return timesPlayed > 0;
 	}
 
 	public boolean hasPlayed(int i) {
-		return timesPlayed == i;
+		return timesPlayed >= i;
 	}
-
-	public int getDelay() {
-		return delay;
-
+	
+	public BufferedImage getImage() {
+		return frames[currentFrame];
 	}
 
 }
