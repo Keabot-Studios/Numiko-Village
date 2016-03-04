@@ -14,7 +14,7 @@ public class Logger {
 			return level;
 		}
 	}
-	
+
 	public static Level log_level = Level.INFO;
 
 	private static void log(Level l, String s) {

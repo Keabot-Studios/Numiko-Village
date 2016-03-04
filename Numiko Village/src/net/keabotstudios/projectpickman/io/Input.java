@@ -10,6 +10,7 @@ import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 
 import net.java.games.input.Component;
+import net.java.games.input.Component.Identifier;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Event;
@@ -20,21 +21,8 @@ public class Input implements KeyListener, MouseMotionListener, MouseListener, F
 
 	private static final int NUM_KEYS = KeyEvent.KEY_LAST;
 	private static final int NUM_MBTNS = MouseEvent.MOUSE_LAST;
-	
+
 	private static float DEADZONE = 0.25f;
-
-	private static int UP = KeyEvent.VK_UP;
-	private static int DOWN = KeyEvent.VK_DOWN;
-	private static int LEFT = KeyEvent.VK_LEFT;
-	private static int RIGHT = KeyEvent.VK_RIGHT;
-
-	private static int ACTION1 = KeyEvent.VK_Z;
-	private static int ACTION2 = KeyEvent.VK_X;
-	private static int ACTION3 = KeyEvent.VK_C;
-
-	private static int FN_1 = KeyEvent.VK_F1;
-	private static int FN_2 = KeyEvent.VK_F2;
-	private static int FN_3 = KeyEvent.VK_F3;
 
 	private boolean[] keys = new boolean[NUM_KEYS];
 	private boolean[] lastKeys = new boolean[NUM_KEYS];
@@ -44,6 +32,61 @@ public class Input implements KeyListener, MouseMotionListener, MouseListener, F
 
 	private Controller activeController = null;
 	private HashMap<Component.Identifier, Float> controllerAxes = new HashMap<Component.Identifier, Float>();
+
+	public enum InputAxis {
+		UP(KeyEvent.VK_UP, Component.Identifier.Axis.Y, -DEADZONE, Component.Identifier.Axis.POV, 0.25f), 
+		DOWN(KeyEvent.VK_DOWN, Component.Identifier.Axis.Y, DEADZONE, Component.Identifier.Axis.POV, 0.75f), 
+		LEFT(KeyEvent.VK_LEFT, Component.Identifier.Axis.X, -DEADZONE, Component.Identifier.Axis.POV, 1.0f), 
+		RIGHT(KeyEvent.VK_RIGHT, Component.Identifier.Axis.X, DEADZONE, Component.Identifier.Axis.POV, 0.5f), 
+		ACTION1(KeyEvent.VK_Z, Component.Identifier.Button._0, 1.0f), 
+		ACTION2(KeyEvent.VK_X, Component.Identifier.Button._1, 1.0f), 
+		ACTION3(KeyEvent.VK_C, Component.Identifier.Button._3, 1.0f), 
+		F1(KeyEvent.VK_F1), 
+		F2(KeyEvent.VK_F2), 
+		F3(KeyEvent.VK_F3);
+
+		private int keyCode;
+		private Identifier identifier1 = null, identifier2 = null;
+		private float actZone1 = 0.0f, actZone2 = 0.0f;
+		
+		private InputAxis(int keyCode) {
+			this.keyCode = keyCode;
+		}
+
+		private InputAxis(int keyCode, Identifier identifier, float actZone) {
+			this.keyCode = keyCode;
+			this.identifier2 = identifier;
+			this.actZone2 = actZone;
+		}
+
+		private InputAxis(int keyCode, Identifier identifier1, float actZone1, Identifier identifier2, float actZone2) {
+			this.keyCode = keyCode;
+			this.identifier1 = identifier1;
+			this.actZone1 = actZone1;
+			this.identifier2 = identifier2;
+			this.actZone2 = actZone2;
+		}
+
+		public int getKeyCode() {
+			return keyCode;
+		}
+		
+		public Identifier getIdentifier1() {
+			return identifier1;
+		}
+		
+		public Identifier getIdentifier2() {
+			return identifier2;
+		}
+		
+		public float getActZone1() {
+			return actZone1;
+		}
+		
+		public float getActZone2() {
+			return actZone2;
+		}
+	}
 
 	public Input(Game game) {
 		game.getFrame().addKeyListener(this);
@@ -94,87 +137,31 @@ public class Input implements KeyListener, MouseMotionListener, MouseListener, F
 		}
 	}
 
-	public boolean up() {
-		if(keys[UP]) return true;
-		if(hasController()) {
-			float value = controllerAxes.get(Component.Identifier.Axis.POV).floatValue();
-			if(value == 0.25f) return true;
-			value = controllerAxes.get(Component.Identifier.Axis.Y).floatValue();
-			if(value < -DEADZONE) return true;
+	public boolean getInput(InputAxis axis) {
+		if (keys[axis.getKeyCode()])
+			return true;
+		if (hasController()) {
+			float value = 0.0f;
+			if(axis.getIdentifier1() != null) {
+				value = controllerAxes.get(axis.getIdentifier1()).floatValue();
+				if(axis.getActZone1() > 0) {
+					if (value > axis.getActZone1())
+					return true;
+				} else {
+					if (value < axis.getActZone1())
+						return true;
+				}
+				
+			}
+			value = 0.0f;
+			if(axis.getIdentifier2() != null) {
+				value = controllerAxes.get(axis.getIdentifier2()).floatValue();
+				if (value == axis.getActZone2())
+					return true;
+			}
+			
 		}
 		return false;
-	}
-
-	public boolean down() {
-		if(keys[DOWN]) return true;
-		if(hasController()) {
-			float value = controllerAxes.get(Component.Identifier.Axis.POV).floatValue();
-			if(value == 0.75f) return true;
-			value = controllerAxes.get(Component.Identifier.Axis.Y).floatValue();
-			if(value > DEADZONE) return true;
-		}
-		return false;
-	}
-
-	public boolean left() {
-		if(keys[LEFT]) return true;
-		if(hasController()) {
-			float value = controllerAxes.get(Component.Identifier.Axis.POV).floatValue();
-			if(value == 1.0f) return true;
-			value = controllerAxes.get(Component.Identifier.Axis.X).floatValue();
-			if(value < -DEADZONE) return true;
-		}
-		return false;
-	}
-
-	public boolean right() {
-		if(keys[RIGHT]) return true;
-		if(hasController()) {
-			float value = controllerAxes.get(Component.Identifier.Axis.POV).floatValue();
-			if(value == 0.5f) return true;
-			value = controllerAxes.get(Component.Identifier.Axis.X).floatValue();
-			if(value > DEADZONE) return true;
-		}
-		return false;
-	}
-	
-	public boolean action1() {
-		if(keys[ACTION1]) return true;
-		if(hasController()) {
-			float value = controllerAxes.get(Component.Identifier.Button._0).floatValue();
-			if(value == 1.0f) return true;
-		}
-		return false;
-	}
-
-	public boolean action2() {
-		if(keys[ACTION2]) return true;
-		if(hasController()) {
-			float value = controllerAxes.get(Component.Identifier.Button._1).floatValue();
-			if(value == 1.0f) return true;
-		}
-		return false;
-	}
-
-	public boolean action3() {
-		if(keys[ACTION3]) return true;
-		if(hasController()) {
-			float value = controllerAxes.get(Component.Identifier.Button._2).floatValue();
-			if(value == 1.0f) return true;
-		}
-		return false;
-	}
-	
-	public boolean fn1() {
-		return keys[FN_1];
-	}
-	
-	public boolean fn2() {
-		return keys[FN_2];
-	}
-	
-	public boolean fn3() {
-		return keys[FN_3];
 	}
 
 	public boolean isMouseButtonClicked(int mbutton) {

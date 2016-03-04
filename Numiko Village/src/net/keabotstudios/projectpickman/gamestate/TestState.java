@@ -3,10 +3,17 @@ package net.keabotstudios.projectpickman.gamestate;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import net.keabotstudios.projectpickman.References;
 import net.keabotstudios.projectpickman.entity.Player;
+import net.keabotstudios.projectpickman.graphics.font.Font;
 import net.keabotstudios.projectpickman.graphics.hud.HudBar;
+import net.keabotstudios.projectpickman.graphics.hud.HudButtonPrompt;
+import net.keabotstudios.projectpickman.graphics.hud.HudSet;
+import net.keabotstudios.projectpickman.graphics.hud.HudText;
+import net.keabotstudios.projectpickman.graphics.hud.PlayerHud;
 import net.keabotstudios.projectpickman.io.Input;
 import net.keabotstudios.projectpickman.io.Path;
+import net.keabotstudios.projectpickman.io.Input.InputAxis;
 import net.keabotstudios.projectpickman.map.Background;
 import net.keabotstudios.projectpickman.map.TileMap;
 import net.keabotstudios.projectpickman.map.TileSet;
@@ -15,8 +22,7 @@ public class TestState extends GameState {
 
 	private TileMap map;
 	private Player player;
-	private HudBar hpBar;
-	private HudBar nrgBar;
+	private PlayerHud playerHud;
 	private Background bg;
 
 	public TestState(GameStateManager gsm) {
@@ -27,22 +33,15 @@ public class TestState extends GameState {
 		map = new TileMap(new TileSet(Path.TILESETS + "/testTileset.png", Path.TILESETS + "/testTileset.tsc"), Path.MAPS + "/testMap.tmp");
 		player = new Player(map, "testy");
 		player.setPosition(100, 100);
-		hpBar = new HudBar(10, 10, 75, player.getMaxHealth(), player.getHealth(), Color.RED.brighter());
-		nrgBar = new HudBar(10, 20, 75, player.getMaxEnergy(), player.getEnergy(), Color.YELLOW);
+		playerHud = new PlayerHud(player);
 		bg = new Background("grassBg");
 	}
 
 	public void update() {
 		player.update();
 		map.centerOn(player);
-		hpBar.update();
-		nrgBar.update();
-		
-		hpBar.setMaxValue(player.getMaxHealth());
-		hpBar.setValue(player.getHealth());
-		nrgBar.setMaxValue(player.getMaxEnergy());
-		nrgBar.setValue(player.getEnergy());
-		
+		playerHud.update();
+
 		bg.setOffset((int) (map.getX() / 2), 0);
 	}
 
@@ -50,13 +49,13 @@ public class TestState extends GameState {
 		bg.render(g);
 		map.render(g);
 		player.render(g);
-		hpBar.render(g);
-		nrgBar.render(g);
+
+		playerHud.render(g);
 	}
 
 	public void handleInput(Input input) {
 		player.handleInput(input);
-		if(input.action3()) {
+		if (input.getInput(InputAxis.F1)) {
 			player.setPosition(100, 100);
 		}
 	}

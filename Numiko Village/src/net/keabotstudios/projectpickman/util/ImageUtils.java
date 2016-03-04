@@ -36,18 +36,19 @@ public class ImageUtils {
 	}
 
 	public static BufferedImage substitute(BufferedImage original, Color to) {
-		BufferedImage out = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_RGB);
+		BufferedImage out = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		for (int x = 0; x < original.getWidth(); x++) {
 			for (int y = 0; y < original.getHeight(); y++) {
-				Color c = new Color(original.getRGB(x, y));
+				Color c = new Color(original.getRGB(x, y), true);
 				float brightness = ((float) (c.getRed() + c.getGreen() + c.getBlue()) / 3) / 255f;
 
+				int alpha = (int) (c.getAlpha());
 				int red = (int) (to.getRed() + (to.getRed() * brightness));
 				int green = (int) (to.getGreen() + (to.getGreen() * brightness));
 				int blue = (int) (to.getBlue() + (to.getBlue() * brightness));
-				int rgb = ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff);
-				
-				out.setRGB(x, y, rgb);
+				int rgba = (((alpha & 0x0ff) << 24) | (red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff);
+
+				out.setRGB(x, y, rgba);
 			}
 		}
 		return out;

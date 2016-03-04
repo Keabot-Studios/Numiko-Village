@@ -209,6 +209,14 @@ public abstract class GameObject {
 	public int gety() {
 		return (int) y;
 	}
+	
+	public int getXOnScreen() {
+		return (int) (x + xmap) - width / 2;
+	}
+	
+	public int getYOnScreen() {
+		return (int) (y + ymap) - height / 2;
+	}
 
 	public int getWidth() {
 		return width;
@@ -264,13 +272,15 @@ public abstract class GameObject {
 	public void setJumping(boolean b) {
 		jumping = b;
 	}
-	
+
 	public boolean notOnScreen() {
 		return x + xmap + width < 0 || x + xmap + width > References.WIDTH || y + ymap + height < 0 || y + ymap + height > References.HEIGHT;
 	}
 
 	public abstract void handleInput(Input input);
+
 	public abstract void update();
+
 	public abstract void render(Graphics2D g);
 
 }

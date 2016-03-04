@@ -29,16 +29,10 @@ public class Sound {
 			return;
 		Clip clip;
 		try {
-			AudioInputStream ais = AudioSystem.getAudioInputStream(Sound.class
-					.getResourceAsStream(path));
+			AudioInputStream ais = AudioSystem.getAudioInputStream(Sound.class.getResourceAsStream(path));
 			AudioFormat baseFormat = ais.getFormat();
-			AudioFormat decodeFormat = new AudioFormat(
-					AudioFormat.Encoding.PCM_SIGNED,
-					baseFormat.getSampleRate(), 16, baseFormat.getChannels(),
-					baseFormat.getChannels() * 2, baseFormat.getSampleRate(),
-					false);
-			AudioInputStream dais = AudioSystem.getAudioInputStream(
-					decodeFormat, ais);
+			AudioFormat decodeFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16, baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);
+			AudioInputStream dais = AudioSystem.getAudioInputStream(decodeFormat, ais);
 			clip = AudioSystem.getClip();
 			clip.open(dais);
 			clips.put(name, clip);

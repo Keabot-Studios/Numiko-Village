@@ -6,7 +6,8 @@ public class Path {
 	public static final String GUI = TEXTURES + "/gui";
 	public static final String ICONS = TEXTURES + "/icons";
 	public static final String SPRITES = TEXTURES + "/sprites";
-	
+	public static final String FONTS = GUI + "/font";
+
 	public static final String MAPS = "/maps";
 	public static final String TILESETS = MAPS + "/tilesets";
 

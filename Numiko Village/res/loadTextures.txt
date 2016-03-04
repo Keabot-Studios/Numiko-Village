@@ -3,6 +3,10 @@ numiko_title
 bar
 bar_border,1,8
 buttonPrompts,8,8
+weapons,16,16
+weaponSelector
+box,3,3
+dialougeBox
 -sprite-
 numiko_base
 test
@@ -12,3 +16,5 @@ testy
 grassBg
 menubg1
 test_bg
+-font-
+main

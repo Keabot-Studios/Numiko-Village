@@ -38,7 +38,7 @@ public class Textures {
 	}
 
 	private enum TextureType {
-		GUI("gui", Path.GUI), SPRITE("sprite", Path.SPRITES), TILESET("tileset", Path.TILESETS), BACKGROUND("background", Path.BACKGROUNDS);
+		GUI("gui", Path.GUI), SPRITE("sprite", Path.SPRITES), TILESET("tileset", Path.TILESETS), BACKGROUND("background", Path.BACKGROUNDS), FONT("font", Path.FONTS);
 
 		public final String identifier;
 		public final String path;
@@ -121,7 +121,7 @@ public class Textures {
 
 	public static BufferedImage getTexture(String string) {
 		if (!textures.containsKey(string)) {
-			Logger.error("Texture \"" + "\" is not loaded or does not exist!");
+			Logger.error("Texture \"" + string + "\" is not loaded or does not exist!");
 			return noTex;
 		}
 		return textures.get(string);
@@ -129,7 +129,7 @@ public class Textures {
 
 	public static BufferedImage[][] getSpriteSheet(String string) {
 		if (!spriteSheets.containsKey(string)) {
-			Logger.error("Spritesheet \"" + "\" is not loaded or does not exist!");
+			Logger.error("Spritesheet \"" + string + "\" is not loaded or does not exist!");
 			return new BufferedImage[][] { new BufferedImage[] { noTex, noTex, noTex }, new BufferedImage[] { noTex, noTex, noTex }, new BufferedImage[] { noTex, noTex, noTex } };
 		}
 		return spriteSheets.get(string);
