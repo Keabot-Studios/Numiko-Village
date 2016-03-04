@@ -2,10 +2,15 @@ package net.keabotstudios.projectpickman.entity;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.keabotstudios.projectpickman.graphics.Animation;
+import net.keabotstudios.projectpickman.inventory.item.Item;
+import net.keabotstudios.projectpickman.inventory.item.Items;
+import net.keabotstudios.projectpickman.inventory.item.Weapon;
 import net.keabotstudios.projectpickman.io.Input;
+import net.keabotstudios.projectpickman.io.Input.InputAxis;
 import net.keabotstudios.projectpickman.loading.Textures;
 import net.keabotstudios.projectpickman.map.TileMap;
 
@@ -16,6 +21,7 @@ public class Player extends GameObject {
 	private int maxHealth;
 	private int energy;
 	private int maxEnergy;
+	private int jumpEnergyCost;
 
 	// actions
 	private boolean dashing;
@@ -27,23 +33,22 @@ public class Player extends GameObject {
 	// animation
 	private HashMap<Action, BufferedImage[]> sprites;
 	private Action currentAction;
+	
+	private ArrayList<Item> items;
+	private ArrayList<Weapon> weapons;
+	private int selectedWeapon;
 
-	private enum Action {
-		IDLE(4, 20, 32, 32), WALKING(4, 5, 32, 32), JUMPING(1, -1, 32, 32), FALLING(1, -1, 32, 32);
+	public enum Action {
+		IDLE(20, 32, 32), WALKING(5, 32, 32), JUMPING(-1, 32, 32), FALLING(-1, 32, 32), SWINGINGKNIFE(3, 40, 32);
 
-		private int numFrames, delay, spriteWidth, spriteHeight;
+		private int delay, spriteWidth, spriteHeight;
 
-		private Action(int numFrames, int delay, int spriteWidth, int spriteHeight) {
-			this.numFrames = numFrames;
+		private Action(int delay, int spriteWidth, int spriteHeight) {
 			this.delay = delay;
 			this.spriteWidth = spriteWidth;
 			this.spriteHeight = spriteHeight;
 		}
-
-		public int getNumFrames() {
-			return numFrames;
-		}
-
+		
 		public int getDelay() {
 			return delay;
 		}
@@ -72,11 +77,17 @@ public class Player extends GameObject {
 		maxFallSpeed = 4.0;
 		jumpStart = -4.5;
 		stopJumpSpeed = 0.3;
+		jumpEnergyCost = 20;
 
 		facingRight = true;
 
-		health = maxHealth = 50;
-		energy = maxEnergy = 25;
+		health = maxHealth = 25;
+		energy = maxEnergy = 100;
+		
+		items = new ArrayList<Item>();
+		weapons = new ArrayList<Weapon>();
+		weapons.add((Weapon) Items.knife);
+		selectedWeapon = 0;
 
 		sprites = new HashMap<Action, BufferedImage[]>();
 		try {
@@ -84,8 +95,9 @@ public class Player extends GameObject {
 
 			int totalY = 0;
 			for (Action a : Action.values()) {
-				BufferedImage[] bi = new BufferedImage[a.getNumFrames()];
-				for (int i = 0; i < a.getNumFrames(); i++) {
+				int numberOfFrames = spriteSheet.getWidth() / a.getSpriteWidth();
+				BufferedImage[] bi = new BufferedImage[numberOfFrames];
+				for (int i = 0; i < numberOfFrames; i++) {
 					bi[i] = spriteSheet.getSubimage(i * a.getSpriteWidth(), totalY, a.getSpriteWidth(), a.getSpriteHeight());
 				}
 				totalY += a.getSpriteHeight();
@@ -108,12 +120,12 @@ public class Player extends GameObject {
 	public void stop() {
 		left = right = up = down = flinching = jumping = false;
 	}
-	
+
 	private void setDashing(boolean b) {
 		dashing = b;
 	}
 
-	private void setAction(Action action) {
+	public void setAction(Action action) {
 		currentAction = action;
 		animation.setFrames(sprites.get(currentAction));
 		animation.setDelay(currentAction.getDelay());
@@ -154,14 +166,15 @@ public class Player extends GameObject {
 	}
 
 	public void handleInput(Input input) {
-		setUp(input.up());
-		setDown(input.down());
-		setLeft(input.left());
-		setRight(input.right());
-		setJumping(input.action1());
-		setDashing(input.action2());
+		setUp(input.getInput(InputAxis.UP));
+		setDown(input.getInput(InputAxis.DOWN));
+		setLeft(input.getInput(InputAxis.LEFT));
+		setRight(input.getInput(InputAxis.RIGHT));
+		setJumping(input.getInput(InputAxis.ACTION1));
+		setDashing(input.getInput(InputAxis.ACTION2));
 	}
 
+	int nrgRegenTimer = 0;
 	public void update() {
 		getNextPosition();
 		checkTileMapCollision();
@@ -190,6 +203,17 @@ public class Player extends GameObject {
 			facingRight = true;
 		if (left)
 			facingRight = false;
+		
+		if(dashing && (left || right)) setEnergy(--energy);
+		else if(energy != maxEnergy) {
+			nrgRegenTimer++;
+			if(nrgRegenTimer == 5) {
+				setEnergy(++energy);
+				nrgRegenTimer = 0;
+			}
+		} else {
+			nrgRegenTimer = 0;
+		}
 	}
 
 	private void getNextPosition() {
@@ -201,7 +225,7 @@ public class Player extends GameObject {
 		}
 
 		double maxSpeed = this.maxSpeed;
-		if (dashing)
+		if (dashing && energy > 0)
 			maxSpeed *= 1.75;
 
 		if (left) {
@@ -228,9 +252,13 @@ public class Player extends GameObject {
 			}
 		}
 
-		if (jumping && !falling) {
+		if (jumping && !falling && energy >= jumpEnergyCost) {
 			dy = jumpStart;
 			falling = true;
+		}
+		
+		if(jumping && dy == jumpStart) {
+			setEnergy(energy - jumpEnergyCost);
 		}
 
 		if (falling) {

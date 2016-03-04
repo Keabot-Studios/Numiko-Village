@@ -12,30 +12,32 @@ import javax.swing.JPanel;
 
 import net.keabotstudios.projectpickman.gamestate.GameStateManager;
 import net.keabotstudios.projectpickman.gamestate.TestState;
+import net.keabotstudios.projectpickman.graphics.font.Font;
+import net.keabotstudios.projectpickman.inventory.item.Items;
 import net.keabotstudios.projectpickman.io.Input;
 import net.keabotstudios.projectpickman.loading.Textures;
 
 public class Game extends JPanel implements Runnable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private JFrame frame;
-	
+
 	private boolean running = false;
 	private Thread thread;
 	private int fps, ups;
-	
+
 	private BufferedImage image;
 	private Graphics2D g;
-	
+
 	private GameStateManager gsm;
 	private Input input;
-	
+
 	public Game() {
 		Dimension size = new Dimension(References.WIDTH * References.SCALE, References.HEIGHT * References.SCALE);
 		this.setMinimumSize(size);
 		this.setPreferredSize(size);
 		this.setMaximumSize(size);
-		
+
 		frame = new JFrame(References.NAME);
 		frame.add(this);
 		frame.setSize(size);
@@ -55,10 +57,12 @@ public class Game extends JPanel implements Runnable {
 	private void init() {
 		image = new BufferedImage(References.WIDTH, References.HEIGHT, BufferedImage.TYPE_INT_RGB);
 		g = (Graphics2D) image.getGraphics();
-		
+
 		input = new Input(this);
 		Textures.init();
 		Textures.loadTextures();
+		Font.loadFonts();
+		Items.loadItems();
 
 		gsm = new GameStateManager(input);
 		gsm.push(new TestState(gsm));
@@ -83,7 +87,7 @@ public class Game extends JPanel implements Runnable {
 				updates++;
 				delta--;
 			}
-			
+
 			render();
 			frames++;
 
@@ -106,7 +110,7 @@ public class Game extends JPanel implements Runnable {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		gsm.render(g);
-		
+
 		Graphics g2 = getGraphics();
 		g2.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		g2.dispose();
@@ -115,7 +119,7 @@ public class Game extends JPanel implements Runnable {
 	public static void main(String args[]) {
 		new Game().start();
 	}
-	
+
 	public JFrame getFrame() {
 		return frame;
 	}

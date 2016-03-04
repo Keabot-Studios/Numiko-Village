@@ -77,7 +77,7 @@ public class TileMap {
 		}
 
 	}
-	
+
 	public double getX() {
 		return x;
 	}

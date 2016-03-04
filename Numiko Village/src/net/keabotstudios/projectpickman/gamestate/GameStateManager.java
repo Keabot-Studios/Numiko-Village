@@ -45,4 +45,8 @@ public class GameStateManager {
 	public void blockInput(boolean b) {
 		blockInput = b;
 	}
+
+	public Input getInput() {
+		return input;
+	}
 }
