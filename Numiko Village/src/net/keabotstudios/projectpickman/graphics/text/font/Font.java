@@ -1,4 +1,4 @@
-package net.keabotstudios.projectpickman.graphics.font;
+package net.keabotstudios.projectpickman.graphics.text.font;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -43,9 +43,10 @@ public enum Font {
 				if (c == ' ')
 					continue;
 				boolean[] graphic = new boolean[widths[row] * height];
-				BufferedImage characterGraphic = fontSheet.getSubimage(row * widths[row], col * height, widths[row], height);
+				BufferedImage characterGraphic = fontSheet.getSubimage(col * widths[row], row * height, widths[row], height);
+				
 				for(int cgx = 0; cgx < widths[row]; cgx++) {
-					for(int cgy = 0; cgy < widths[row]; cgy++) {
+					for(int cgy = 0; cgy < height; cgy++) {
 						int alpha = new Color(characterGraphic.getRGB(cgx, cgy), true).getAlpha();
 						graphic[cgx + cgy * widths[row]] = alpha != 0;
 					}

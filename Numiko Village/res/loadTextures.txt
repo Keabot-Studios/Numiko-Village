@@ -11,6 +11,7 @@ dialougeBox
 numiko_base
 test
 testy
+rabbu,24,24
 -tileset-
 -background-
 grassBg

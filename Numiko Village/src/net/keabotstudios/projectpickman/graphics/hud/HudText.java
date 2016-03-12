@@ -1,12 +1,10 @@
 package net.keabotstudios.projectpickman.graphics.hud;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
-import net.keabotstudios.projectpickman.graphics.font.Font;
-import net.keabotstudios.projectpickman.graphics.font.FontCharacter;
+import net.keabotstudios.projectpickman.graphics.text.font.Font;
+import net.keabotstudios.projectpickman.graphics.text.font.FontCharacter;
 
 public class HudText extends HudObject {
 

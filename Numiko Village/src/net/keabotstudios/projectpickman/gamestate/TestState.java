@@ -1,19 +1,13 @@
 package net.keabotstudios.projectpickman.gamestate;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 
-import net.keabotstudios.projectpickman.References;
 import net.keabotstudios.projectpickman.entity.Player;
-import net.keabotstudios.projectpickman.graphics.font.Font;
-import net.keabotstudios.projectpickman.graphics.hud.HudBar;
-import net.keabotstudios.projectpickman.graphics.hud.HudButtonPrompt;
-import net.keabotstudios.projectpickman.graphics.hud.HudSet;
-import net.keabotstudios.projectpickman.graphics.hud.HudText;
 import net.keabotstudios.projectpickman.graphics.hud.PlayerHud;
+import net.keabotstudios.projectpickman.graphics.text.RichText;
 import net.keabotstudios.projectpickman.io.Input;
-import net.keabotstudios.projectpickman.io.Path;
 import net.keabotstudios.projectpickman.io.Input.InputAxis;
+import net.keabotstudios.projectpickman.io.Path;
 import net.keabotstudios.projectpickman.map.Background;
 import net.keabotstudios.projectpickman.map.TileMap;
 import net.keabotstudios.projectpickman.map.TileSet;
@@ -35,6 +29,8 @@ public class TestState extends GameState {
 		player.setPosition(100, 100);
 		playerHud = new PlayerHud(player);
 		bg = new Background("grassBg");
+		
+		RichText testText = new RichText("Well, <playername>, you made it.<n>Now let's see how <s7,0.1>LONG YOU CAN LIVE!<s->");
 	}
 
 	public void update() {

@@ -1,4 +1,4 @@
-package net.keabotstudios.projectpickman.graphics.font;
+package net.keabotstudios.projectpickman.graphics.text.font;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -25,7 +25,7 @@ public class FontCharacter {
 		for(int gx = 0; gx < graphicWidth; gx++) {
 			for(int gy = 0; gy < graphicHeight; gy++) {
 				if(graphic[gx + gy * graphicWidth])
-					g.drawLine(x + gx, y + gy, x + gx, y + gy);
+					g.fillRect(x + (gx * size), y + (gy * size), size, size);
 			}
 		}
 	}

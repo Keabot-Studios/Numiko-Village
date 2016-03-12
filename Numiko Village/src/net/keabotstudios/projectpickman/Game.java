@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 import net.keabotstudios.projectpickman.gamestate.GameStateManager;
 import net.keabotstudios.projectpickman.gamestate.TestState;
-import net.keabotstudios.projectpickman.graphics.font.Font;
+import net.keabotstudios.projectpickman.graphics.text.font.Font;
 import net.keabotstudios.projectpickman.inventory.item.Items;
 import net.keabotstudios.projectpickman.io.Input;
 import net.keabotstudios.projectpickman.loading.Textures;

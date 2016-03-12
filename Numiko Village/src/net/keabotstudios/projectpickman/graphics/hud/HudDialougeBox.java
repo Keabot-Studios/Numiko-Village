@@ -6,7 +6,8 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 import net.keabotstudios.projectpickman.References;
-import net.keabotstudios.projectpickman.graphics.font.Font;
+import net.keabotstudios.projectpickman.GameInfo;
+import net.keabotstudios.projectpickman.graphics.text.font.Font;
 import net.keabotstudios.projectpickman.loading.Textures;
 
 public class HudDialougeBox extends HudObject {
@@ -23,6 +24,11 @@ public class HudDialougeBox extends HudObject {
 	private	char[] showingChars;
 	private int charDelay = 1, charTimer = 0, nextCharIndex = 0;
 	private boolean done = false, hasText = false, shaking = false;
+	private static final int IDLE = 0, ENTERING = 1, EXITING = 2;
+	private int movingStatus = IDLE;
+	
+	private double dy = 0;
+	private int ty = 0;
 
 	public HudDialougeBox() {
 		super(0, References.HEIGHT, References.WIDTH, 0);
@@ -30,6 +36,9 @@ public class HudDialougeBox extends HudObject {
 		size = References.WIDTH / box.getWidth();
 		this.height = (int) (box.getHeight() * size);
 		this.y -= height;
+		if(GameInfo.dialougeBoxOnTop) {
+			this.y = 0;
+		}
 	}
 	
 	public void changeText(String text, int charDelay) {
@@ -80,6 +89,18 @@ public class HudDialougeBox extends HudObject {
 		if(hasText) {
 			
 		}
+	}
+	
+	public void show() {
+		
+	}
+	
+	public void hide() {
+		
+	}
+	
+	public boolean showing() {
+		return movingStatus == IDLE;
 	}
 
 }

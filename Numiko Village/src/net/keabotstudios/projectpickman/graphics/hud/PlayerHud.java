@@ -3,11 +3,11 @@ package net.keabotstudios.projectpickman.graphics.hud;
 import java.awt.Color;
 
 import net.keabotstudios.projectpickman.entity.Player;
-import net.keabotstudios.projectpickman.graphics.font.Font;
+import net.keabotstudios.projectpickman.graphics.text.font.Font;
 import net.keabotstudios.projectpickman.loading.Textures;
 
 public class PlayerHud extends HudSet {
-	
+
 	private Player player;
 
 	public PlayerHud(Player player) {
@@ -18,9 +18,10 @@ public class PlayerHud extends HudSet {
 		this.add("hpBar", new HudBar(3 + this.get("nrgText").getWidth(), 2, 75, player.getMaxHealth(), player.getHealth(), Color.RED.brighter()));
 		this.add("nrgBar", new HudBar(3 + this.get("nrgText").getWidth(), 12, 75, player.getMaxEnergy(), player.getEnergy(), Color.YELLOW));
 		this.add("weaponSelector", new HudImage(0, 20, 1, Textures.getTexture("weaponSelector")));
-		this.add("textBox", new HudDialougeBox());
+
+		//this.add("textBox", new HudDialougeBox());
 	}
-	
+
 	public void update() {
 		super.update();
 
