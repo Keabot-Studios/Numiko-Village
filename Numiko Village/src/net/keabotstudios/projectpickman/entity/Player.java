@@ -19,6 +19,7 @@ public class Player extends GameObject {
 	// stats
 	private int health;
 	private int maxHealth;
+	private boolean limitedEnergy;
 	private int energy;
 	private int maxEnergy;
 	private int jumpEnergyCost;
@@ -62,8 +63,10 @@ public class Player extends GameObject {
 		}
 	}
 
-	public Player(TileMap tm, String textureName) {
+	public Player(TileMap tm, String textureName, boolean limitedEnergy) {
 		super(tm);
+		
+		this.limitedEnergy = limitedEnergy;
 
 		width = 32;
 		height = 32;
@@ -204,7 +207,7 @@ public class Player extends GameObject {
 		if (left)
 			facingRight = false;
 		
-		if(dashing && (left || right)) setEnergy(--energy);
+		if(dashing && (left || right) && limitedEnergy) setEnergy(--energy);
 		else if(energy != maxEnergy) {
 			nrgRegenTimer++;
 			if(nrgRegenTimer == 5) {
@@ -252,12 +255,12 @@ public class Player extends GameObject {
 			}
 		}
 
-		if (jumping && !falling && energy >= jumpEnergyCost) {
+		if (jumping && !falling && (energy >= jumpEnergyCost || !limitedEnergy)) {
 			dy = jumpStart;
 			falling = true;
 		}
 		
-		if(jumping && dy == jumpStart) {
+		if(jumping && dy == jumpStart && limitedEnergy) {
 			setEnergy(energy - jumpEnergyCost);
 		}
 
@@ -284,6 +287,10 @@ public class Player extends GameObject {
 		} else {
 			g.drawImage(animation.getImage(), (int) (x + xmap - height / 2 + width), (int) (y + ymap - height / 2), -width, height, null);
 		}
+	}
+
+	public boolean hasLimitedEnergy() {
+		return limitedEnergy;
 	}
 
 }

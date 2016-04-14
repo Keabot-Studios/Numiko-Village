@@ -16,6 +16,7 @@ import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Event;
 import net.java.games.input.EventQueue;
 import net.keabotstudios.projectpickman.Game;
+import net.keabotstudios.projectpickman.io.console.Logger;
 
 public class Input implements KeyListener, MouseMotionListener, MouseListener, FocusListener {
 
@@ -34,13 +35,13 @@ public class Input implements KeyListener, MouseMotionListener, MouseListener, F
 	private HashMap<Component.Identifier, Float> controllerAxes = new HashMap<Component.Identifier, Float>();
 
 	public enum InputAxis {
-		UP(KeyEvent.VK_UP, Component.Identifier.Axis.Y, -DEADZONE, Component.Identifier.Axis.POV, 0.25f), 
-		DOWN(KeyEvent.VK_DOWN, Component.Identifier.Axis.Y, DEADZONE, Component.Identifier.Axis.POV, 0.75f), 
-		LEFT(KeyEvent.VK_LEFT, Component.Identifier.Axis.X, -DEADZONE, Component.Identifier.Axis.POV, 1.0f), 
-		RIGHT(KeyEvent.VK_RIGHT, Component.Identifier.Axis.X, DEADZONE, Component.Identifier.Axis.POV, 0.5f), 
-		ACTION1(KeyEvent.VK_Z, Component.Identifier.Button._0, 1.0f), 
-		ACTION2(KeyEvent.VK_X, Component.Identifier.Button._1, 1.0f), 
-		ACTION3(KeyEvent.VK_C, Component.Identifier.Button._3, 1.0f), 
+		UP(KeyEvent.VK_W, Component.Identifier.Axis.Y, -DEADZONE, Component.Identifier.Axis.POV, 0.25f), 
+		DOWN(KeyEvent.VK_S, Component.Identifier.Axis.Y, DEADZONE, Component.Identifier.Axis.POV, 0.75f), 
+		LEFT(KeyEvent.VK_A, Component.Identifier.Axis.X, -DEADZONE, Component.Identifier.Axis.POV, 1.0f), 
+		RIGHT(KeyEvent.VK_D, Component.Identifier.Axis.X, DEADZONE, Component.Identifier.Axis.POV, 0.5f), 
+		ACTION1(KeyEvent.VK_SPACE, Component.Identifier.Button._0, 1.0f), 
+		ACTION2(KeyEvent.VK_SHIFT, Component.Identifier.Button._1, 1.0f), 
+		ACTION3(KeyEvent.VK_E, Component.Identifier.Button._3, 1.0f), 
 		F1(KeyEvent.VK_F1), 
 		F2(KeyEvent.VK_F2), 
 		F3(KeyEvent.VK_F3);

@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import net.keabotstudios.projectpickman.io.Logger;
-import net.keabotstudios.projectpickman.io.Path;
+import net.keabotstudios.projectpickman.io.Paths;
+import net.keabotstudios.projectpickman.io.console.Logger;
 import net.keabotstudios.projectpickman.util.ImageUtils;
 
 public class Textures {
 
 	// ICONS
-	public static final BufferedImage[] icons = new BufferedImage[] { ImageUtils.loadImageRaw(Path.ICONS + "/icon16.png"), ImageUtils.loadImageRaw(Path.ICONS + "/icon32.png"), ImageUtils.loadImageRaw(Path.ICONS + "/icon64.png") };
-	public static final BufferedImage noTex = ImageUtils.loadImageRaw(Path.TEXTURES + "/notex.png");
+	public static final BufferedImage[] icons = new BufferedImage[] { ImageUtils.loadImageRaw(Paths.ICONS + "/icon16.png"), ImageUtils.loadImageRaw(Paths.ICONS + "/icon32.png"), ImageUtils.loadImageRaw(Paths.ICONS + "/icon64.png") };
+	public static final BufferedImage noTex = ImageUtils.loadImageRaw(Paths.TEXTURES + "/notex.png");
 
 	private static HashMap<String, BufferedImage> textures;
 	private static HashMap<String, BufferedImage[][]> spriteSheets;
@@ -38,7 +38,7 @@ public class Textures {
 	}
 
 	private enum TextureType {
-		GUI("gui", Path.GUI), SPRITE("sprite", Path.SPRITES), TILESET("tileset", Path.TILESETS), BACKGROUND("background", Path.BACKGROUNDS), FONT("font", Path.FONTS);
+		GUI("gui", Paths.GUI), SPRITE("sprite", Paths.SPRITES), TILESET("tileset", Paths.TILESETS), BACKGROUND("background", Paths.BACKGROUNDS), FONT("font", Paths.FONTS);
 
 		public final String identifier;
 		public final String path;

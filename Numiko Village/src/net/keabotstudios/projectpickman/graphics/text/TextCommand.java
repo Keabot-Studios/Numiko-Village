@@ -32,28 +32,39 @@ public abstract class TextCommand {
 		}
 	}
 	
+	protected final CommandType type;
 	protected final int index;
 	protected final String commmandText;
 	
-	public TextCommand(int index, String commandText) {
+	public TextCommand(CommandType type, int index, String commandText) {
+		this.type = type;
 		this.index = index;
 		this.commmandText = commandText;
+		parse(commandText);
 	}
 	
 	public abstract void parse(String text);
 	
-	public abstract String showText();
+	public abstract String getShowText();
 	
-	public int showTextLength() {
-		return showText().length();
+	public int getShowTextLength() {
+		return getShowText().length();
 	}
 
 	public int getIndex() {
 		return index;
 	}
+	
+	public String getCommandText() {
+		return commmandText;
+	}
 
 	public int getCommandTextSize() {
 		return commmandText.length() + 2;
+	}
+	
+	public CommandType getType() {
+		return type;
 	}
 
 }

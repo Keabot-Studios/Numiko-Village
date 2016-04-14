@@ -6,7 +6,7 @@ public class ShakeCommand extends TextCommand {
 	private float shakeProb = 0.0f;
 
 	public ShakeCommand(int index, String commandText) {
-		super(index, commandText);
+		super(CommandType.SHAKE, index, commandText);
 	}
 
 	public void parse(String text) {
@@ -15,8 +15,16 @@ public class ShakeCommand extends TextCommand {
 		shakeProb = Float.parseFloat(parts[1]);
 	}
 
-	public String showText() {
+	public String getShowText() {
 		return "";
+	}
+	
+	public int getShakeDistance() {
+		return shakeDist;
+	}
+	
+	public float getShakeProbability() {
+		return shakeProb;
 	}
 
 }

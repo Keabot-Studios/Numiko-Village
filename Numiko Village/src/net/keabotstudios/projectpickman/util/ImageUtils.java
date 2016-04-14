@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import net.keabotstudios.projectpickman.Game;
-import net.keabotstudios.projectpickman.io.Logger;
+import net.keabotstudios.projectpickman.io.console.Logger;
 
 public class ImageUtils {
 

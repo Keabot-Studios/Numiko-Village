@@ -5,7 +5,7 @@ public class ChangeFaceCommand extends TextCommand {
 	private int faceId = 0, emotionId = 0;
 
 	public ChangeFaceCommand(int index, String commandText) {
-		super(index, commandText);
+		super(CommandType.FACE, index, commandText);
 	}
 
 	public void parse(String text) {
@@ -22,7 +22,7 @@ public class ChangeFaceCommand extends TextCommand {
 		return emotionId;
 	}
 
-	public String showText() {
+	public String getShowText() {
 		return "";
 	}
 

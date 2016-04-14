@@ -2,11 +2,9 @@ package net.keabotstudios.projectpickman.graphics.hud;
 
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
-import net.keabotstudios.projectpickman.io.Logger;
+import net.keabotstudios.projectpickman.io.console.Logger;
 
 public class HudSet {
 

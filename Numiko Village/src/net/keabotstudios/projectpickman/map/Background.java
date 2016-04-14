@@ -27,4 +27,8 @@ public class Background {
 		this.yOffset = y % References.HEIGHT;
 	}
 
+	public void update() {
+		
+	}
+
 }

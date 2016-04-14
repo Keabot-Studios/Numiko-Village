@@ -2,15 +2,29 @@ package net.keabotstudios.projectpickman.graphics.text.font;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.keabotstudios.projectpickman.io.Logger;
+import net.keabotstudios.projectpickman.io.console.Logger;
 import net.keabotstudios.projectpickman.loading.Textures;
-import net.keabotstudios.projectpickman.util.ImageUtils;
 
 public enum Font {
-	MAIN("main", new String[] { "ABCDGHJK", "MNOPQRST", "UVWXYZab", "cdghkmno", "pquvwxyz", "02356789", "*-<>~   ", "EFLefjrst", "4^?      ", "_-\"        ", "I1\\/          ", "il!()             ", ":;'.                        " }, new int[] { 7, 7, 7, 7, 7, 7, 7, 6, 6, 5, 4, 3, 2 }, 11, 7);
+	MAIN("main", new String[] { 
+			"ABCDGHJK", 
+			"MNOPQRST", 
+			"UVWXYZab", 
+			"cdghkmno", 
+			"pquvwxyz", 
+			"02356789", 
+			"*-<>~   ", 
+			"EFLefjrst", 
+			"4^?      ", 
+			"_-\"        ", 
+			"I1\\/          ", 
+			"il!()             ", 
+			":;'.,                       " }, 
+			new int[] { 7, 7, 7, 7, 7, 7, 7, 6, 6, 5, 4, 3, 2 }, 
+			11, 
+			7);
 
 	private String texture;
 	private String[] lines;

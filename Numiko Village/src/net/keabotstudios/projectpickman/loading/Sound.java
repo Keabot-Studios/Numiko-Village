@@ -9,8 +9,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-import net.keabotstudios.projectpickman.io.Logger;
-import net.keabotstudios.projectpickman.io.Path;
+import net.keabotstudios.projectpickman.io.Paths;
+import net.keabotstudios.projectpickman.io.console.Logger;
 
 public class Sound {
 
@@ -171,9 +171,9 @@ public class Sound {
 		amountOfSound = names.size();
 		for (int i = 0; i < amountOfSound; i++) {
 			if (isMusic.get(i)) {
-				load(Path.MUSIC + "/" + names.get(i) + ".mp3", names.get(i));
+				load(Paths.MUSIC + "/" + names.get(i) + ".mp3", names.get(i));
 			} else {
-				load(Path.SOUND + "/" + names.get(i) + ".mp3", names.get(i));
+				load(Paths.SOUND + "/" + names.get(i) + ".mp3", names.get(i));
 			}
 		}
 	}
