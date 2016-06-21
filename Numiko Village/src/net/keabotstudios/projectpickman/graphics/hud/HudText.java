@@ -67,8 +67,8 @@ public class HudText extends HudObject {
 			char[] line = lines[l].toCharArray();
 			for (int ci = 0; ci < line.length; ci++) {
 				char c = line[ci];
-				FontCharacter fc = font.getCharacter(c);
 				if(c != ' ') {
+					FontCharacter fc = font.getCharacter(c);
 					lineWidth += (fc.getWidth() + 1) * size;
 				} else {
 					lineWidth += font.getSpaceWidth() * size;
@@ -93,9 +93,10 @@ public class HudText extends HudObject {
 		for (int l = 0; l < lines.length; l++) {
 			int charX = 0;
 			char[] line = lines[l].toCharArray();
-			for (int c = 0; c < line.length; c++) {
-				FontCharacter fc = font.getCharacter(line[c]);
-				if (fc.getChar() != ' ') {
+			for (int ci = 0; ci < line.length; ci++) {
+				char c = line[ci];
+				FontCharacter fc = font.getCharacter(c);
+				if (c != ' ') {
 					fc.render(g, x + charX + xOffset, y + charY + yOffset, size, color);
 					charX += (fc.getWidth() + 1) * size;
 				} else {

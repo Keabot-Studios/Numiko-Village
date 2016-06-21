@@ -8,9 +8,14 @@ import net.keabotstudios.projectpickman.io.console.Logger;
 
 public class HudSet {
 
-	private int x, y, tx, ty, dx, dy;
-	private long time;
-	private boolean moving;
+	protected int x;
+	protected int y;
+	protected int tx;
+	protected int ty;
+	protected int dx;
+	protected int dy;
+	protected long time;
+	protected boolean moving;
 	private HashMap<String, Integer> componentIndexes;
 	private ArrayList<HudObject> components;
 
@@ -27,7 +32,7 @@ public class HudSet {
 	}
 
 	public void add(String name, HudObject component) {
-		if(componentIndexes.containsKey(name) || components.contains(component)) {
+		if (componentIndexes.containsKey(name) || components.contains(component)) {
 			Logger.error("HudObject and/or Name already exists in this HudSet! Name: " + name + " HudObject: " + component.toString());
 			return;
 		}
@@ -43,14 +48,16 @@ public class HudSet {
 
 	public void render(Graphics2D g) {
 		for (HudObject o : components) {
-			o.render(g, x, y);
+			if (!o.isHidden()) {
+				o.render(g, x, y);
+			}
 		}
 	}
 
 	public HudObject get(String name) {
 		return components.get(componentIndexes.get(name));
 	}
-	
+
 	public void remove(String name) {
 		components.remove(componentIndexes.get(name));
 		componentIndexes.remove(name);

@@ -165,6 +165,7 @@ public class HudDialougeBox extends HudObject {
 	}
 
 	public void render(Graphics2D g, int xOffset, int yOffset) {
+		if(hidden) return;
 		g.drawImage(box, x, y, width, height, null);
 		g.drawImage(faceTexture, x + (int) (3.0 * size), y + (int) (3.0 * size), (int) (16.0 * size), (int) (16.0 * size), null);
 		int newLineIndex = 0;
@@ -191,14 +192,6 @@ public class HudDialougeBox extends HudObject {
 				}
 			}
 		}
-	}
-
-	public void show() {
-
-	}
-
-	public void hide() {
-
 	}
 
 	public boolean showing() {

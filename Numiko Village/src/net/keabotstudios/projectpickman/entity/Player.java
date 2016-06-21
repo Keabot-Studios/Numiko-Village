@@ -13,16 +13,15 @@ import net.keabotstudios.projectpickman.io.Input;
 import net.keabotstudios.projectpickman.io.Input.InputAxis;
 import net.keabotstudios.projectpickman.loading.Textures;
 import net.keabotstudios.projectpickman.map.TileMap;
+import net.keabotstudios.projectpickman.util.MathUtils;
 
 public class Player extends GameObject {
 
 	// stats
 	private int health;
 	private int maxHealth;
-	private boolean limitedEnergy;
-	private int energy;
-	private int maxEnergy;
-	private int jumpEnergyCost;
+	private int money;
+	private int maxMoney;
 
 	// actions
 	private boolean dashing;
@@ -34,7 +33,7 @@ public class Player extends GameObject {
 	// animation
 	private HashMap<Action, BufferedImage[]> sprites;
 	private Action currentAction;
-	
+
 	private ArrayList<Item> items;
 	private ArrayList<Weapon> weapons;
 	private int selectedWeapon;
@@ -49,7 +48,7 @@ public class Player extends GameObject {
 			this.spriteWidth = spriteWidth;
 			this.spriteHeight = spriteHeight;
 		}
-		
+
 		public int getDelay() {
 			return delay;
 		}
@@ -65,8 +64,6 @@ public class Player extends GameObject {
 
 	public Player(TileMap tm, String textureName, boolean limitedEnergy) {
 		super(tm);
-		
-		this.limitedEnergy = limitedEnergy;
 
 		width = 32;
 		height = 32;
@@ -80,13 +77,13 @@ public class Player extends GameObject {
 		maxFallSpeed = 4.0;
 		jumpStart = -4.5;
 		stopJumpSpeed = 0.3;
-		jumpEnergyCost = 20;
 
 		facingRight = true;
 
 		health = maxHealth = 25;
-		energy = maxEnergy = 100;
-		
+		money = 0;
+		maxMoney = 999;
+
 		items = new ArrayList<Item>();
 		weapons = new ArrayList<Weapon>();
 		weapons.add((Weapon) Items.knife);
@@ -125,6 +122,8 @@ public class Player extends GameObject {
 	}
 
 	private void setDashing(boolean b) {
+		if (dy != 0)
+			return;
 		dashing = b;
 	}
 
@@ -141,31 +140,45 @@ public class Player extends GameObject {
 	}
 
 	public void setHealth(int health) {
-		if (health > maxHealth)
-			health = maxHealth;
-		if (health < 0)
-			health = 0;
-		this.health = health;
+		this.health = MathUtils.clamp(health, 0, maxHealth);
 	}
 
-	public int getEnergy() {
-		return energy;
+	public int getMoney() {
+		return money;
 	}
 
-	public void setEnergy(int energy) {
-		if (energy > maxEnergy)
-			energy = maxEnergy;
-		if (energy < 0)
-			energy = 0;
-		this.energy = energy;
+	public int getMaxMoney() {
+		return maxMoney;
+	}
+
+	public void setMoney(int money) {
+		this.money = MathUtils.clamp(money, 0, maxMoney);
+	}
+	
+	public void setMaxMoney(int maxMoney) {
+		this.maxMoney = maxMoney;
+		this.money = MathUtils.clamp(money, 0, maxMoney);
+	}
+
+	public void addMoney(int amount) {
+		this.money = MathUtils.clamp(money += amount, 0, maxMoney);
+	}
+
+	public void removeMoney(int amount) {
+		this.money = MathUtils.clamp(money -= amount, 0, maxMoney);
 	}
 
 	public int getMaxHealth() {
 		return maxHealth;
 	}
+	
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
+		this.health = MathUtils.clamp(health, 0, maxHealth);
+	}
 
-	public int getMaxEnergy() {
-		return maxEnergy;
+	public int getSelectedWeapon() {
+		return selectedWeapon;
 	}
 
 	public void handleInput(Input input) {
@@ -175,9 +188,15 @@ public class Player extends GameObject {
 		setRight(input.getInput(InputAxis.RIGHT));
 		setJumping(input.getInput(InputAxis.ACTION1));
 		setDashing(input.getInput(InputAxis.ACTION2));
+		if(input.getInputTapped(InputAxis.ACTION3)) changeWeapon();
+	}
+
+	public void changeWeapon() {
+
 	}
 
 	int nrgRegenTimer = 0;
+
 	public void update() {
 		getNextPosition();
 		checkTileMapCollision();
@@ -206,17 +225,6 @@ public class Player extends GameObject {
 			facingRight = true;
 		if (left)
 			facingRight = false;
-		
-		if(dashing && (left || right) && limitedEnergy) setEnergy(--energy);
-		else if(energy != maxEnergy) {
-			nrgRegenTimer++;
-			if(nrgRegenTimer == 5) {
-				setEnergy(++energy);
-				nrgRegenTimer = 0;
-			}
-		} else {
-			nrgRegenTimer = 0;
-		}
 	}
 
 	private void getNextPosition() {
@@ -228,7 +236,7 @@ public class Player extends GameObject {
 		}
 
 		double maxSpeed = this.maxSpeed;
-		if (dashing && energy > 0)
+		if (dashing)
 			maxSpeed *= 1.75;
 
 		if (left) {
@@ -255,13 +263,9 @@ public class Player extends GameObject {
 			}
 		}
 
-		if (jumping && !falling && (energy >= jumpEnergyCost || !limitedEnergy)) {
+		if (jumping && !falling) {
 			dy = jumpStart;
 			falling = true;
-		}
-		
-		if(jumping && dy == jumpStart && limitedEnergy) {
-			setEnergy(energy - jumpEnergyCost);
 		}
 
 		if (falling) {
@@ -287,10 +291,6 @@ public class Player extends GameObject {
 		} else {
 			g.drawImage(animation.getImage(), (int) (x + xmap - height / 2 + width), (int) (y + ymap - height / 2), -width, height, null);
 		}
-	}
-
-	public boolean hasLimitedEnergy() {
-		return limitedEnergy;
 	}
 
 }

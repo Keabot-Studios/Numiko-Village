@@ -16,6 +16,7 @@ import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Event;
 import net.java.games.input.EventQueue;
 import net.keabotstudios.projectpickman.Game;
+import net.keabotstudios.projectpickman.io.Input.InputAxis;
 import net.keabotstudios.projectpickman.io.console.Logger;
 
 public class Input implements KeyListener, MouseMotionListener, MouseListener, FocusListener {
@@ -33,23 +34,28 @@ public class Input implements KeyListener, MouseMotionListener, MouseListener, F
 
 	private Controller activeController = null;
 	private HashMap<Component.Identifier, Float> controllerAxes = new HashMap<Component.Identifier, Float>();
+	private HashMap<Component.Identifier, Float> lastControllerAxes = new HashMap<Component.Identifier, Float>();
 
 	public enum InputAxis {
-		UP(KeyEvent.VK_W, Component.Identifier.Axis.Y, -DEADZONE, Component.Identifier.Axis.POV, 0.25f), 
-		DOWN(KeyEvent.VK_S, Component.Identifier.Axis.Y, DEADZONE, Component.Identifier.Axis.POV, 0.75f), 
-		LEFT(KeyEvent.VK_A, Component.Identifier.Axis.X, -DEADZONE, Component.Identifier.Axis.POV, 1.0f), 
-		RIGHT(KeyEvent.VK_D, Component.Identifier.Axis.X, DEADZONE, Component.Identifier.Axis.POV, 0.5f), 
-		ACTION1(KeyEvent.VK_SPACE, Component.Identifier.Button._0, 1.0f), 
-		ACTION2(KeyEvent.VK_SHIFT, Component.Identifier.Button._1, 1.0f), 
-		ACTION3(KeyEvent.VK_E, Component.Identifier.Button._3, 1.0f), 
-		F1(KeyEvent.VK_F1), 
-		F2(KeyEvent.VK_F2), 
-		F3(KeyEvent.VK_F3);
+		UP(KeyEvent.VK_UP, Component.Identifier.Axis.Y, -DEADZONE, Component.Identifier.Axis.POV, 0.25f),
+		DOWN(KeyEvent.VK_DOWN, Component.Identifier.Axis.Y, DEADZONE, Component.Identifier.Axis.POV, 0.75f),
+		LEFT(KeyEvent.VK_LEFT, Component.Identifier.Axis.X, -DEADZONE, Component.Identifier.Axis.POV, 1.0f),
+		RIGHT(KeyEvent.VK_RIGHT, Component.Identifier.Axis.X, DEADZONE, Component.Identifier.Axis.POV, 0.5f),
+		ACTION1(KeyEvent.VK_Z, Component.Identifier.Button._0, 1.0f),
+		ACTION2(KeyEvent.VK_X, Component.Identifier.Button._1, 1.0f),
+		ACTION3(KeyEvent.VK_A, Component.Identifier.Button._2, 1.0f),
+		ACTION4(KeyEvent.VK_S, Component.Identifier.Button._3, 1.0f),
+		F1(KeyEvent.VK_F1),
+		F2(KeyEvent.VK_F2),
+		F3(KeyEvent.VK_F3),
+		F4(KeyEvent.VK_F4),
+		F5(KeyEvent.VK_F5),
+		F6(KeyEvent.VK_F6);
 
 		private int keyCode;
 		private Identifier identifier1 = null, identifier2 = null;
 		private float actZone1 = 0.0f, actZone2 = 0.0f;
-		
+
 		private InputAxis(int keyCode) {
 			this.keyCode = keyCode;
 		}
@@ -71,19 +77,19 @@ public class Input implements KeyListener, MouseMotionListener, MouseListener, F
 		public int getKeyCode() {
 			return keyCode;
 		}
-		
+
 		public Identifier getIdentifier1() {
 			return identifier1;
 		}
-		
+
 		public Identifier getIdentifier2() {
 			return identifier2;
 		}
-		
+
 		public float getActZone1() {
 			return actZone1;
 		}
-		
+
 		public float getActZone2() {
 			return actZone2;
 		}
@@ -109,6 +115,7 @@ public class Input implements KeyListener, MouseMotionListener, MouseListener, F
 			Component[] components = activeController.getComponents();
 			for (Component c : components) {
 				controllerAxes.put(c.getIdentifier(), 0.0f);
+				lastControllerAxes.put(c.getIdentifier(), 0.0f);
 			}
 		}
 	}
@@ -135,7 +142,13 @@ public class Input implements KeyListener, MouseMotionListener, MouseListener, F
 				float value = event.getValue();
 				controllerAxes.replace(comp.getIdentifier(), value);
 			}
+			for (Component comp : activeController.getComponents()) {
+				if (lastControllerAxes.get(comp.getIdentifier()) != controllerAxes.get(comp.getIdentifier())) {
+					lastControllerAxes.replace(comp.getIdentifier(), controllerAxes.get(comp.getIdentifier()));
+				}
+			}
 		}
+
 	}
 
 	public boolean getInput(InputAxis axis) {
@@ -143,24 +156,54 @@ public class Input implements KeyListener, MouseMotionListener, MouseListener, F
 			return true;
 		if (hasController()) {
 			float value = 0.0f;
-			if(axis.getIdentifier1() != null) {
+			if (axis.getIdentifier1() != null) {
 				value = controllerAxes.get(axis.getIdentifier1()).floatValue();
-				if(axis.getActZone1() > 0) {
+				if (axis.getActZone1() > 0) {
 					if (value > axis.getActZone1())
-					return true;
+						return true;
 				} else {
 					if (value < axis.getActZone1())
 						return true;
 				}
-				
+
 			}
 			value = 0.0f;
-			if(axis.getIdentifier2() != null) {
+			if (axis.getIdentifier2() != null) {
 				value = controllerAxes.get(axis.getIdentifier2()).floatValue();
 				if (value == axis.getActZone2())
 					return true;
 			}
-			
+
+		}
+		return false;
+	}
+
+	public boolean getInputTapped(InputAxis axis) {
+		if (keys[axis.getKeyCode()] != lastKeys[axis.getKeyCode()])
+			return true;
+		if (hasController()) {
+			float value = 0.0f;
+			float lastValue = 0.0f;
+			if (axis.getIdentifier1() != null) {
+				value = controllerAxes.get(axis.getIdentifier1()).floatValue();
+				lastValue = lastControllerAxes.get(axis.getIdentifier1()).floatValue();
+				if (axis.getActZone1() > 0) {
+					if (lastValue != value && value > axis.getActZone1())
+						return true;
+				} else {
+					if (lastValue != value && value < axis.getActZone1())
+						return true;
+				}
+
+			}
+			value = 0.0f;
+			lastValue = 0.0f;
+			if (axis.getIdentifier2() != null) {
+				value = controllerAxes.get(axis.getIdentifier2()).floatValue();
+				lastValue = lastControllerAxes.get(axis.getIdentifier2()).floatValue();
+				if (lastValue != value && value == axis.getActZone2())
+					return true;
+			}
 		}
 		return false;
 	}

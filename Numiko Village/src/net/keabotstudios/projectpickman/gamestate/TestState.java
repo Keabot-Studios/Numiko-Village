@@ -21,9 +21,7 @@ public class TestState extends GameState {
 	public void init() {
 		level = new Level(100, 100, new TileSet(Paths.TILESETS + "/testTileset.png", Paths.TILESETS + "/testTileset.tsc"), Paths.MAPS + "/testMap.tmp", "grassBg", false);
 		playerHud = new PlayerHud(level.getPlayer());
-		
-		RichText testText = new RichText("Well, <c2><playername><c0>, you made it.<n>Now let's see...<n><c1><s7,0.1>HOW LONG YOU CAN LIVE!<s-><c0>");
-		playerHud.setDialouge(testText);
+		RichText testText = new RichText("Well, <c2><playername><c0>, you made it.<n>Now let's see...<n>HOW LONG YOU CAN LIVE!");
 	}
 
 	public void update() {

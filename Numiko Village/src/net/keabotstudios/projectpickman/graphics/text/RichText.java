@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.keabotstudios.projectpickman.graphics.text.TextCommand.CommandType;
-import net.keabotstudios.projectpickman.io.console.Logger;
 
 public class RichText {
 
@@ -29,44 +28,82 @@ public class RichText {
 			TextCommand command = null;
 			int commandIndex = m.start();
 			if (commandType != null) {
+				int index = commandIndex + offset;
 				switch (commandType) {
-				default:
-					continue;
 				case PLAYER_NAME:
-					command = new PlayerNameCommand(commandIndex - offset, commandText);
+					command = new PlayerNameCommand(index, commandText);
 					break;
 				case NEW_LINE:
-					command = new NewLineCommand(commandIndex - offset, commandText);
+					command = new NewLineCommand(index, commandText);
 					break;
 				case COLOR:
-					command = new ChangeColorCommand(commandIndex - offset, commandText);
+					command = new ChangeColorCommand(index, commandText);
 					break;
 				case SHAKE:
-					command = new ShakeCommand(commandIndex - offset, commandText);
+					command = new ShakeCommand(index, commandText);
 					break;
 				case STOP_SHAKE:
-					command = new StopShakeCommand(commandIndex - offset, commandText);
+					command = new StopShakeCommand(index, commandText);
 					break;
 				case FACE:
-					command = new ChangeFaceCommand(commandIndex - offset, commandText);
+					command = new ChangeFaceCommand(index, commandText);
 					break;
 				case NULL_FACE:
-					command = new NullFaceCommand(commandIndex - offset, commandText);
+					command = new NullFaceCommand(index, commandText);
 					break;
 				case WAIT:
-					command = new WaitCommand(commandIndex - offset, commandText);
+					command = new WaitCommand(index, commandText);
 					break;
+				default:
+					continue;
 				}
 				
 				formattedText += text.substring(lastCommandIndex, commandIndex) + command.getShowText();
-				offset += command.getShowTextLength() + command.getCommandTextSize();
+				offset += command.getShowTextLength() - command.getCommandTextSize();
 				lastCommandIndex = commandIndex + command.getCommandTextSize();
 				commands.add(command);
 			}
 		}
+		
 		textCommands = commands.toArray(new TextCommand[commands.size()]);
-
+		parseTextCommands(formattedText);
 		return formattedText;
+	}
+	
+	private void parseTextCommands(String text) {
+		TextCommand[] commands = this.textCommands;
+		
+		ArrayList<Integer> newLines = new ArrayList<Integer>();
+		
+		
+		for (int i = 0; i < text.length(); i++) {
+			for (int ci = 0; ci < commands.length; ci++) {
+				TextCommand command = commands[ci];
+				if (command.getIndex() == i) {
+					switch (command.getType()) {
+					case NEW_LINE:
+						if (!newLines.contains(i))
+							newLines.add(i);
+					default:
+						break;
+					}
+				}
+			}
+		}
+		for (int i = 0; i < text.length(); i++) {
+			for (int ci = 0; ci < commands.length; ci++) {
+				TextCommand command = commands[ci];
+				if (command.getIndex() == i) {
+					switch (command.getType()) {
+					case NEW_LINE:
+						System.out.print("\n");
+					default:
+						break;
+					}
+				}
+			}
+			System.out.print(text.charAt(i));
+		}
 	}
 
 	public String getText() {

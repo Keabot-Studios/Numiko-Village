@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
-import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -23,11 +22,6 @@ import net.keabotstudios.projectpickman.inventory.item.Items;
 import net.keabotstudios.projectpickman.io.Input;
 import net.keabotstudios.projectpickman.io.console.Console;
 import net.keabotstudios.projectpickman.io.console.Logger.LogLevel;
-import net.keabotstudios.projectpickman.io.serial.SerialArray;
-import net.keabotstudios.projectpickman.io.serial.SerialDatabase;
-import net.keabotstudios.projectpickman.io.serial.SerialField;
-import net.keabotstudios.projectpickman.io.serial.SerialObject;
-import net.keabotstudios.projectpickman.io.serial.Serialization;
 import net.keabotstudios.projectpickman.loading.Textures;
 
 public class Game extends JPanel implements Runnable {
@@ -85,28 +79,28 @@ public class Game extends JPanel implements Runnable {
 		gsm = new GameStateManager(input);
 		gsm.push(new TestState(gsm));
 
-		Random rand = new Random();
-		int[] arrayData = new int[100];
-		for (int i = 0; i < arrayData.length; i++) {
-			arrayData[i] = rand.nextInt();
-		}
-
-		SerialDatabase database = new SerialDatabase("Database");
-
-		SerialArray array = SerialArray.create("RandomNumbers", arrayData); // Correct Size: 412
-		SerialField xField = SerialField.create("x", 10);
-		SerialField yField = SerialField.create("y", 10);
-
-		SerialObject object = new SerialObject("Entity");
-		object.addArray(array);
-		object.addField(xField);
-		object.addField(yField);
-
-		database.addObject(object);
-
-		byte[] stream = new byte[object.getSize()];
-		object.writeBytes(stream, 0);
-		Serialization.saveToFile("test.nvd", stream);
+//		Random rand = new Random();
+//		int[] arrayData = new int[100];
+//		for (int i = 0; i < arrayData.length; i++) {
+//			arrayData[i] = rand.nextInt();
+//		}
+//
+//		SerialDatabase database = new SerialDatabase("Database");
+//
+//		SerialArray array = SerialArray.create("RandomNumbers", arrayData); // Correct Size: 412
+//		SerialField xField = SerialField.create("x", 10);
+//		SerialField yField = SerialField.create("y", 10);
+//
+//		SerialObject object = new SerialObject("Entity");
+//		object.addArray(array);
+//		object.addField(xField);
+//		object.addField(yField);
+//
+//		database.addObject(object);
+//
+//		byte[] stream = new byte[object.getSize()];
+//		object.writeBytes(stream, 0);
+//		Serialization.saveToFile("test.nvd", stream);
 	}
 
 	public void run() {

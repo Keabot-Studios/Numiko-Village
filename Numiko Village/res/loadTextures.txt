@@ -12,6 +12,7 @@ numiko_base
 test
 testy
 rabbu,24,24
+coin,16,16
 -tileset-
 -background-
 grassBg
